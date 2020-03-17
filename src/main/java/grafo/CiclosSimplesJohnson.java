@@ -2,6 +2,7 @@ package grafo;
 
 import it.unimi.dsi.fastutil.ints.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 public class CiclosSimplesJohnson {
@@ -22,8 +23,16 @@ public class CiclosSimplesJohnson {
     }
 
     public void correrJohnson(Grafo G){
-        LinkedHashSet<IntLinkedOpenHashSet> componentes = UtilidadesGrafo.componentesFuertementeConectadas(G,G.getVertices());
+        ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(G,G.getVertices()));
         while (!componentes.isEmpty()){
+            IntLinkedOpenHashSet componente = componentes.get(0);
+            componentes.remove(0);
+            if (componente.size()>3) { //todo cambiar por MIN_Vertices
+                //int minVertice = verticeMinimo(componente)
+                //algoritmo Johnson
+                //G.eliminarVertice(minVertice);
+                componentes.addAll(UtilidadesGrafo.componentesFuertementeConectadas(G, componente));
+            }
         }
     }
 
