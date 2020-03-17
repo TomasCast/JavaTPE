@@ -2,6 +2,8 @@ package grafo;
 
 import it.unimi.dsi.fastutil.ints.*;
 
+import java.util.LinkedHashSet;
+
 public class CiclosSimplesJohnson {
 
     private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
@@ -19,6 +21,11 @@ public class CiclosSimplesJohnson {
             }
     }
 
+    public void correrJohnson(Grafo G){
+        LinkedHashSet<IntLinkedOpenHashSet> componentes = UtilidadesGrafo.componentesFuertementeConectadas(G,G.getVertices());
+        while (!componentes.isEmpty()){
+        }
+    }
 
     //todo cambiar a private
     public boolean ciclosSimplesComponente(Grafo componente, int verticeInicio, int verticeActual){
