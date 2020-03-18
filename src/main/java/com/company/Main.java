@@ -59,7 +59,7 @@ public class Main {
         Diccionario diccionario = UtilidadesOdem.getPaquetes(args[0]);
         Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
 
-        mostrarGrafo(dependencias);
+       // mostrarGrafo(dependencias);
         c.correrJohnson(dependencias);
         System.out.println(c.suma);
 
