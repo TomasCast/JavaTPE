@@ -5,60 +5,90 @@ import it.unimi.dsi.fastutil.ints.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Queue;
+import java.util.function.Predicate;
+
 public class CiclosSimplesJohnson {
+
+    public static int MAX_CICLOS = 3;
+    public static int MIN_CICLOS = 3;
+    public int suma = 0;
 
     private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
     private Int2ObjectMap<IntLinkedOpenHashSet> blockedMap = new Int2ObjectLinkedOpenHashMap<>();
-    private IntStack pila = new IntArrayList();
+    private IntArrayList pila = new IntArrayList();
 
     private void desbloquear(int vertice){
         blockedSet.remove(vertice);
         IntLinkedOpenHashSet bloqueados = blockedMap.get(vertice);
-        if(bloqueados != null)
+        if(bloqueados != null) {
             for (int w : bloqueados) {
-                bloqueados.remove(w);
-                if(blockedSet.contains(w))
+                if (blockedSet.contains(w))
                     desbloquear(w);
             }
-    }
-
-    public void correrJohnson(Grafo G){
-        ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(G,G.getVertices()));
-        while (!componentes.isEmpty()){
-            IntLinkedOpenHashSet componente = componentes.get(0);
-            componentes.remove(0);
-            if (componente.size()>3) { //todo cambiar por MIN_Vertices
-                //int minVertice = verticeMinimo(componente)
-                //algoritmo Johnson
-                //G.eliminarVertice(minVertice);
-                componentes.addAll(UtilidadesGrafo.componentesFuertementeConectadas(G, componente));
-            }
+            blockedMap.remove(vertice);
         }
     }
 
+    public void correrJohnson(Grafo g){
+        ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(g,g.getVertices()));
+//        componentes.removeIf(new Predicate<IntLinkedOpenHashSet>() { //remuevo los de tamaño menor que MIN_CICLOS
+//            @Override
+//            public boolean test(IntLinkedOpenHashSet integers) {
+//                return integers.size() < MIN_CICLOS;
+//            }
+//        });
+
+        while (!componentes.isEmpty() && g.getCantVertices() > 0){
+            IntLinkedOpenHashSet componente = componentes.get(0);
+            System.out.println(componente);
+            componentes.remove(0);
+            int minVertice = getMinVerticeComponentes(componente);
+            this.ciclosSimplesComponente(g, componente, minVertice, minVertice);
+            g.eliminarVertice(minVertice);
+            LinkedHashSet<IntLinkedOpenHashSet> componentesNuevas = UtilidadesGrafo.componentesFuertementeConectadas(g, componente);
+            for (IntLinkedOpenHashSet nueva:componentesNuevas) {
+                componentes.add(componentes.size(),nueva);
+            }
+        }
+
+    }
+
     //todo cambiar a private
-    public boolean ciclosSimplesComponente(Grafo componente, int verticeInicio, int verticeActual){
+    public boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet verticesComponente, int verticeInicio, int verticeActual){
         boolean hayCiclo = false;
         pila.push(verticeActual);
         blockedSet.add(verticeActual);
+        IntLinkedOpenHashSet adyacentes = new IntLinkedOpenHashSet();
 
-        for (int ady : componente.getAdyacentes(verticeActual)) {
-            if(ady == verticeInicio){
+        for (int vertice:verticesComponente) { // agrego los adyacentes de la componente.
+            if(g.esAdyacente(verticeActual, vertice))
+                adyacentes.add(vertice);
+        }
+
+        for (int ady : adyacentes) {
+            if(ady == verticeInicio && pila.size() == MIN_CICLOS){
                 System.out.println("hay ciclo: "+pila); //aca hay que imprimir en el archivo y demas
+                suma++;
                 hayCiclo = true;
             }else{
-                if(!blockedSet.contains(ady))
-                    if(ciclosSimplesComponente(componente,verticeInicio,ady))
-                        hayCiclo = true;
+                if(!blockedSet.contains(ady)) {
+                    if(pila.size() < MAX_CICLOS)
+                        if (ciclosSimplesComponente(g, verticesComponente, verticeInicio, ady))
+                            hayCiclo = true;
+                }
             }
         }
 
         if(hayCiclo)
             desbloquear(verticeActual);
         else{
-            for (int ady : componente.getAdyacentes(verticeActual)) {
+            for (int ady : adyacentes) {
                 if(blockedMap.get(ady) == null)
                     blockedMap.put(ady, new IntLinkedOpenHashSet());
+
                 if(!blockedMap.get(ady).contains(verticeActual))
                     blockedMap.get(ady).add(verticeActual);
             }
@@ -67,4 +97,15 @@ public class CiclosSimplesJohnson {
         pila.popInt();
         return hayCiclo;
     }
+
+    private int getMinVerticeComponentes(IntLinkedOpenHashSet componente){
+        int min = Integer.MAX_VALUE;
+        for (int v : componente) {
+            if(v < min)
+                min = v;
+        }
+        return min;
+    }
+
+
 }

@@ -17,7 +17,7 @@ public class UtilidadesGrafo {
         //Algoritmo de Kosaraju
         IntArrayList pila = new IntArrayList(g.getCantVertices()); //pila inicializada con el tamaño del grafo
         DFS_Forest(g,vertices,pila);
-        return construirComponentes(g.getReversa(),vertices,pila);
+        return construirComponentes(g,vertices,pila);
     }
 
     /*Permite crear la pila que contendra los nodos del grafo en orden de finalizacion, la cual sera
@@ -27,24 +27,14 @@ public class UtilidadesGrafo {
         IntLinkedOpenHashSet visitados = new IntLinkedOpenHashSet(verticesC.size());
         for (int v: verticesC) {
             if(!visitados.contains(v)){
-                System.out.println("Procesando "+v+"...");
                 visitados.add(v);
                 DFS(g,verticesC,v,visitados,pila);
             }
         }
-        System.out.println(pila);
     }
 
     /*DFS recursivo, usado por DFS_Forest*/
-    private static void DFS(Grafo g,IntLinkedOpenHashSet verticesC, int vertice, IntLinkedOpenHashSet visitados, IntStack pila){
-
-        /*IntLinkedOpenHashSet adyacentes = g.getAdyacentes(vertice);
-        adyacentes.removeIf(new Predicate<Integer>() {
-            @Override
-            public boolean test(Integer integer) {
-                return verticesC.contains(integer);
-            }
-        });*/
+    private static void DFS(Grafo g, IntLinkedOpenHashSet verticesC, int vertice, IntLinkedOpenHashSet visitados, IntStack pila){
         IntLinkedOpenHashSet adyacentes = new IntLinkedOpenHashSet();
         for (int i:verticesC){
             if(g.esAdyacente(vertice,i))
@@ -62,15 +52,15 @@ public class UtilidadesGrafo {
     /*Construye las componentes fuertemente conectadas del grafo, explorandolo en el orden resultante
     * de desapilar los elementos de la pila
     * */
-    private static LinkedHashSet<IntLinkedOpenHashSet> construirComponentes(boolean[][] reverso,IntLinkedOpenHashSet verticesC, IntStack pila){
+    private static LinkedHashSet<IntLinkedOpenHashSet> construirComponentes(Grafo g,IntLinkedOpenHashSet verticesC, IntStack pila){
         LinkedHashSet<IntLinkedOpenHashSet> componentes = new LinkedHashSet<>();
         IntLinkedOpenHashSet visitados = new IntLinkedOpenHashSet(verticesC.size());
         while(!pila.isEmpty()){
             int vertice = pila.popInt();
             if(!visitados.contains(vertice)){
                 visitados.add(vertice);
-                IntLinkedOpenHashSet componente= new IntLinkedOpenHashSet();
-                DFS_componentes(reverso,verticesC, vertice, componente, visitados);
+                IntLinkedOpenHashSet componente = new IntLinkedOpenHashSet();
+                DFS_componentes(g,verticesC, vertice, componente, visitados);
                 componentes.add(componente);
             }
         }
@@ -79,18 +69,20 @@ public class UtilidadesGrafo {
     }
 
     /*Similar al DFS pero, a medida que va recorriendo, agrega los vertices a la componente.*/
-    private static void DFS_componentes(boolean[][]matrizR,IntLinkedOpenHashSet verticesC, int vertice_actual, IntLinkedOpenHashSet componente, IntLinkedOpenHashSet visitados){
+    private static void DFS_componentes(Grafo g,IntLinkedOpenHashSet verticesC, int vertice_actual, IntLinkedOpenHashSet componente, IntLinkedOpenHashSet visitados){
         componente.add(vertice_actual);
         /*IntLinkedOpenHashSet adyacentes = reverso.getAdyacentes(vertice_actual);*/
         IntLinkedOpenHashSet adyacentes = new IntLinkedOpenHashSet();
+
         for (int i:verticesC){
-            if(matrizR[vertice_actual][i])
+            if(g.esAdyacenteReverso(vertice_actual,i))
                 adyacentes.add(i);
         }
+
         for(int ady : adyacentes){
             if(!visitados.contains(ady)){
                 visitados.add(ady);
-                DFS_componentes(matrizR,verticesC,ady,componente,visitados);
+                DFS_componentes(g,verticesC,ady,componente,visitados);
             }
         }
     }

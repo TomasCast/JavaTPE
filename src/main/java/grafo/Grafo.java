@@ -14,7 +14,6 @@ public class Grafo {
     private int maxCantidadVertices = 0; //indica la cantidad maxima de vertices que se encontraron activos en el grafo
     private int cantidadVerticesActivos = 0; // indica la cantidad de vertices que no estan borrados (en boorado[])
     private int cantidadArcos = 0;
-    private boolean [][] matrizR; //matriz de adyacencia reversa
 
 
     /*todo Cosas importantes que hablar en el informe:
@@ -23,6 +22,20 @@ public class Grafo {
     *  --> Puedo agregar vertices con numero (su id) pero este no puede ser mas grande
     *  que el tamaño de la matriz. Si es igual al tamaño, se agranda la matriz segun el
     *  factor de crecimiento*/
+
+    /**
+     * @return true si destino es adyacente a origen*/
+    public boolean esAdyacente(int origen, int destino){
+        if(origen<borrado.length && destino<borrado.length)
+            return matriz[origen][destino];
+        return false;
+    }
+
+    public boolean esAdyacenteReverso(int origen, int destino){
+        if(origen<matriz.length && destino<matriz.length)
+            return matriz[destino][origen];
+        return false;
+    }
 
     /**
      * Constructor de Grafo en base a sus atributos.
@@ -34,7 +47,6 @@ public class Grafo {
     private Grafo(boolean [] borrados, boolean [][] matriz, int maxCantidadVertices, int cantidadVerticesActivos,int cantidadArcos){
         this.borrado = borrados;
         this.matriz = matriz;
-        this.matrizR = MatrizReversa(this.matriz);
         this.maxCantidadVertices = maxCantidadVertices;
         this.cantidadVerticesActivos = cantidadVerticesActivos;
         this.cantidadArcos = cantidadArcos;
@@ -122,10 +134,6 @@ public class Grafo {
             matriz[origen][destino] = false;
     }
 
-    public boolean esAdyacente(int origen, int destino){
-      return matriz[origen][destino];
-    };
-
     public IntLinkedOpenHashSet getVertices(){
         int [] vertices = new int[cantidadVerticesActivos];
         int agregados = 0;
@@ -172,15 +180,6 @@ public class Grafo {
         }
         return new Grafo(borrado, matriz, g.maxCantidadVertices, g.cantidadVerticesActivos, g.cantidadArcos);
     }*/
-    public boolean[][] getReversa(){
-        return matrizR;
-    }
-    private boolean[][] MatrizReversa(boolean[][] original){
-        boolean [][] auxR = new boolean[original.length][original.length];
-        for(int i=0; i<original.length; i++){ // revierto la matriz
-            for(int j=0; j<original.length; j++)
-                auxR[i][j] = original[j][i];
-        }
-        return auxR;
-    }
+
+
 }

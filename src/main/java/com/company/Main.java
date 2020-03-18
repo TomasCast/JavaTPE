@@ -24,47 +24,47 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Grafo g = new Grafo(6);
-        g.agregarVertice(1);
-        g.agregarVertice(2);
-        g.agregarVertice(3);
-        g.agregarVertice(4);
-        g.agregarVertice(5);
-        g.agregarVertice(6);
-
-        g.agregarArco(1,2);
-        g.agregarArco(1,5);
-        g.agregarArco(2,3);
-        g.agregarArco(3,2);
-        g.agregarArco(3,1);
-        g.agregarArco(3,4);
-        g.agregarArco(3,6);
-        g.agregarArco(4,5);
-        g.agregarArco(5,2);
-        g.agregarArco(6,4);
-
-        CiclosSimplesJohnson c = new CiclosSimplesJohnson();
-        c.ciclosSimplesComponente(g,1,1);
-
-        g.eliminarVertice(1);
-        c.ciclosSimplesComponente(g,2,2);
-
-
-
-
-
-
-
-
-
-
-
-//        Diccionario diccionario = UtilidadesOdem.getPaquetes(args[0]);
-//        Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
+//        Grafo g = new Grafo(10);
+//        g.agregarVertice(1);
+//        g.agregarVertice(2);
+//        g.agregarVertice(3);
+//        g.agregarVertice(4);
+//        g.agregarVertice(5);
+//        g.agregarVertice(6);
+//        g.agregarVertice(7);
+//        g.agregarVertice(8);
+//        g.agregarVertice(9);
 //
-//        mostrarGrafo(dependencias);
+//        g.agregarArco(1,2);
+//        g.agregarArco(1,5);
+//        g.agregarArco(1,8);
+//        g.agregarArco(2,3);
+//        g.agregarArco(2,9);
+//        g.agregarArco(2,7);
+//        g.agregarArco(3,2);
+//        g.agregarArco(3,1);
+//        g.agregarArco(3,4);
+//        g.agregarArco(3,6);
+//        g.agregarArco(4,5);
+//        g.agregarArco(5,2);
+//        g.agregarArco(6,4);
+//        g.agregarArco(8,9);
+//        g.agregarArco(9,8);
+//
+//
+        CiclosSimplesJohnson c = new CiclosSimplesJohnson();
+//        c.correrJohnson(g);
+        
+
+        Diccionario diccionario = UtilidadesOdem.getPaquetes(args[0]);
+        Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
+
+        mostrarGrafo(dependencias);
+        c.correrJohnson(dependencias);
+        System.out.println(c.suma);
+
 //        System.out.println(UtilidadesGrafo.componentesFuertementeConectadas(dependencias));
-//        Grafo g = new Grafo(2);
+//        Grafo g = new Grafo(12);
 //        g.agregarVertice(1);
 //        g.agregarVertice(2);
 //        g.agregarVertice(3);
@@ -95,7 +95,7 @@ public class Main {
 //        System.out.println("Grafo g");
 //        mostrarGrafo(g);
 //
-//        System.out.println(UtilidadesGrafo.componentesFuertementeConectadas(g));
+//        System.out.println(UtilidadesGrafo.componentesFuertementeConectadas(g, g.getVertices()));
 
     }
 }
