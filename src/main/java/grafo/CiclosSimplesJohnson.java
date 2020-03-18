@@ -74,15 +74,19 @@ public class CiclosSimplesJohnson {
 
         for (int ady : adyacentes) {
             if(ady == verticeInicio){
-                if (pila.size() >= MIN_CICLOS && pila.size() <= MAX_CICLOS) {
+                if (pila.size() >= MIN_CICLOS) {
 //                    System.out.println("hay ciclo: " + pila); //aca hay que imprimir en el archivo y demas
                     suma++;
                 }
                 hayCiclo = true;
             }else{
                 if(!blockedSet.contains(ady)) {
-                    if (ciclosSimplesComponente(g, verticesComponente, verticeInicio, ady))
+                    if (pila.size() < MAX_CICLOS){
+                        if (ciclosSimplesComponente(g, verticesComponente, verticeInicio, ady))
                             hayCiclo = true;
+                    }else{
+                        hayCiclo = true;
+                    }
                 }
             }
         }
