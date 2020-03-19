@@ -1,6 +1,8 @@
 package grafo;
 
+import dependencias.SalidaThread;
 import it.unimi.dsi.fastutil.ints.*;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -12,7 +14,7 @@ import java.util.function.Predicate;
 public class CiclosSimplesJohnson {
 
     public static int MAX_CICLOS = 9;
-    public static int MIN_CICLOS = 9;
+    public static int MIN_CICLOS = 3;
     public int suma = 0;
 
     private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
@@ -31,7 +33,7 @@ public class CiclosSimplesJohnson {
         }
     }
 
-    public void correrJohnson(Grafo g){
+    public void correrJohnson(Grafo g, SalidaThread out){
         ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(g,g.getVertices()));
         componentes.removeIf(new Predicate<IntLinkedOpenHashSet>() { //remuevo los de tamaño menor que MIN_CICLOS
             @Override
@@ -46,12 +48,13 @@ public class CiclosSimplesJohnson {
 //            System.out.print(componentes);
 //            System.out.println("  "+minVertice);
             componentes.remove(0);
-            this.ciclosSimplesComponente(g, componente, minVertice, minVertice);
+            this.ciclosSimplesComponente(g, componente, minVertice, minVertice, out);
             g.eliminarVertice(minVertice);
             componente.remove(minVertice);
             pila.clear();
             blockedSet.clear();
             blockedMap.clear();
+
             LinkedHashSet<IntLinkedOpenHashSet> componentesNuevas = UtilidadesGrafo.componentesFuertementeConectadas(g, componente);
             for (IntLinkedOpenHashSet nueva:componentesNuevas) {
                 componentes.add(componentes.size(),nueva);
@@ -61,7 +64,7 @@ public class CiclosSimplesJohnson {
     }
 
     //todo cambiar a private
-    public boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet verticesComponente, int verticeInicio, int verticeActual){
+    public boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet verticesComponente, int verticeInicio, int verticeActual, SalidaThread out){
         boolean hayCiclo = false;
         pila.push(verticeActual);
         blockedSet.add(verticeActual);
@@ -75,14 +78,15 @@ public class CiclosSimplesJohnson {
         for (int ady : adyacentes) {
             if(ady == verticeInicio){
                 if (pila.size() >= MIN_CICLOS) {
-//                    System.out.println("hay ciclo: " + pila); //aca hay que imprimir en el archivo y demas
+                    out.agregarCiclo(pila.clone());
+                    //System.out.println(pila);
                     suma++;
                 }
                 hayCiclo = true;
             }else{
                 if(!blockedSet.contains(ady)) {
                     if (pila.size() < MAX_CICLOS){
-                        if (ciclosSimplesComponente(g, verticesComponente, verticeInicio, ady))
+                        if (ciclosSimplesComponente(g, verticesComponente, verticeInicio, ady, out))
                             hayCiclo = true;
                     }else{
                         hayCiclo = true;
