@@ -2,13 +2,8 @@ package grafo;
 
 import dependencias.SalidaThread;
 import it.unimi.dsi.fastutil.ints.*;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Queue;
 import java.util.function.Predicate;
 
 public class CiclosSimplesJohnson {
@@ -45,8 +40,6 @@ public class CiclosSimplesJohnson {
         while (!componentes.isEmpty() && g.getCantVertices() > 0){
             IntLinkedOpenHashSet componente = componentes.get(0);
             int minVertice = getMinVerticeComponentes(componente);
-//            System.out.print(componentes);
-//            System.out.println("  "+minVertice);
             componentes.remove(0);
             this.ciclosSimplesComponente(g, componente, minVertice, minVertice, out);
             g.eliminarVertice(minVertice);
@@ -63,8 +56,7 @@ public class CiclosSimplesJohnson {
 
     }
 
-    //todo cambiar a private
-    public boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet verticesComponente, int verticeInicio, int verticeActual, SalidaThread out){
+    private boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet verticesComponente, int verticeInicio, int verticeActual, SalidaThread out){
         boolean hayCiclo = false;
         pila.push(verticeActual);
         blockedSet.add(verticeActual);
@@ -79,7 +71,6 @@ public class CiclosSimplesJohnson {
             if(ady == verticeInicio){
                 if (pila.size() >= MIN_CICLOS) {
                     out.agregarCiclo(pila.clone());
-                    //System.out.println(pila);
                     suma++;
                 }
                 hayCiclo = true;

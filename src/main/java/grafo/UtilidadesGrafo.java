@@ -1,12 +1,9 @@
 package grafo;
 
 import dependencias.Diccionario;
-import dependencias.Paquete;
 import it.unimi.dsi.fastutil.ints.*;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.function.Predicate;
 
 public class UtilidadesGrafo {
 
