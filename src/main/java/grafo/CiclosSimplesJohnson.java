@@ -16,6 +16,12 @@ public class CiclosSimplesJohnson {
     private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
     private Int2ObjectMap<IntLinkedOpenHashSet> blockedMap = new Int2ObjectLinkedOpenHashMap<>();
     private IntArrayList pila = new IntArrayList();
+    private int cantidadCiclosTamano [] = new int[MAX_CICLOS-MIN_CICLOS+1]; //guarda cantidad de ciclos por tamaño
+
+    public CiclosSimplesJohnson(){
+        for(int i=0; i<cantidadCiclosTamano.length; i++)
+            cantidadCiclosTamano[i] = 0;
+    }
 
     public void correrJohnson(Grafo g, SalidaThread out){
         ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(g,g.getVertices()));
@@ -104,7 +110,7 @@ public class CiclosSimplesJohnson {
         }
 
         for (int ady : adyacentes) {
-            if(ady == vInicio){
+            if(ady == vInicio){ // encontre un ciclo
                 if (pila.size() >= MIN_CICLOS) {
 
                     if(condBonusTrack.test(pila)) // esto es para el bonus track, se chequea si ambos vertices a y b estan en el ciclo y se retorna true.
@@ -114,6 +120,8 @@ public class CiclosSimplesJohnson {
                         out.agregarCiclo(pila.clone());
 
                     suma++;
+
+                    cantidadCiclosTamano[pila.size() - MIN_CICLOS]++;
                 }
                 hayCiclo = true;
             }else{
@@ -151,6 +159,10 @@ public class CiclosSimplesJohnson {
                 min = v;
         }
         return min;
+    }
+
+    public int[] getCantidadCiclosTamano(){
+        return this.cantidadCiclosTamano;
     }
 
 

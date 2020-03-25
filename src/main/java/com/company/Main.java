@@ -52,8 +52,11 @@ public class Main {
         Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
 
         c.correrJohnson(dependencias, generadorSalida);
-//        System.out.println(c.suma);
+        System.out.println(c.suma);
 //        System.out.println(c.hayCiclo(dependencias,19,4));
+        int arr[] = c.getCantidadCiclosTamano();
+        for(int i=0; i<arr.length; i++)
+            System.out.print(arr[i]+", ");
 
         generadorSalida.finalizar();
         t.join();
