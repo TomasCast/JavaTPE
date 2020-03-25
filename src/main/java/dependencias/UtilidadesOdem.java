@@ -13,9 +13,9 @@ import java.io.File;
 public class UtilidadesOdem {
     /*Clase que posee utilidades para leer y procesar archivos con extension "odem".*/
 
-    /**@param ruta Ubicacion del archivo odem.
+    /**@param archivo archivo odem con dependencias.
      * @return document resultante de parsear el archivo*/
-    public static Document procesarArchivo(String ruta){
+    public static Document procesarArchivo(File archivo){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
         try {
@@ -25,10 +25,9 @@ public class UtilidadesOdem {
             e.printStackTrace();
         }
 
-        File inputFile = new File(ruta);
         Document document = null;
         try {
-            document = dBuilder.parse(inputFile); // creo el documento a partir del archivo
+            document = dBuilder.parse(archivo); // creo el documento a partir del archivo
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -36,9 +35,9 @@ public class UtilidadesOdem {
     }
 
     /**Levanta los paquetes de un archivo odem junto con sus clases y dependencias, y los coloca en un Diccionario.*/
-    public static Diccionario getPaquetes(String ruta){
+    public static Diccionario getPaquetes(File archivo){
         Diccionario salida = new Diccionario();
-        Document document = procesarArchivo(ruta);
+        Document document = procesarArchivo(archivo);
         Element root = document.getDocumentElement();
         Node container= ((Element) root.getElementsByTagName("context").item(0)).getElementsByTagName("container").item(0);
 

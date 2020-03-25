@@ -12,7 +12,7 @@ public class UtilidadesGrafo {
      * */
     public static LinkedHashSet<IntLinkedOpenHashSet> componentesFuertementeConectadas(Grafo g, IntLinkedOpenHashSet vertices){
         //Algoritmo de Kosaraju
-        IntArrayList pila = new IntArrayList(g.getCantVertices()); //pila inicializada con el tamaño del grafo
+        IntArrayList pila = new IntArrayList(g.getCantVertices());
         DFS_Forest(g,vertices,pila);
         return construirComponentes(g,vertices,pila);
     }
@@ -68,7 +68,6 @@ public class UtilidadesGrafo {
     /*Similar al DFS pero, a medida que va recorriendo, agrega los vertices a la componente.*/
     private static void DFS_componentes(Grafo g,IntLinkedOpenHashSet verticesC, int vertice_actual, IntLinkedOpenHashSet componente, IntLinkedOpenHashSet visitados){
         componente.add(vertice_actual);
-        /*IntLinkedOpenHashSet adyacentes = reverso.getAdyacentes(vertice_actual);*/
         IntLinkedOpenHashSet adyacentes = new IntLinkedOpenHashSet();
 
         for (int i:verticesC){

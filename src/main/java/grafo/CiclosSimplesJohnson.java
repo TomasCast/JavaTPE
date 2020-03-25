@@ -4,7 +4,6 @@ import dependencias.SalidaThread;
 import it.unimi.dsi.fastutil.ints.*;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public class CiclosSimplesJohnson {
@@ -16,14 +15,14 @@ public class CiclosSimplesJohnson {
     private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
     private Int2ObjectMap<IntLinkedOpenHashSet> blockedMap = new Int2ObjectLinkedOpenHashMap<>();
     private IntArrayList pila = new IntArrayList();
-    private int cantidadCiclosTamano [] = new int[MAX_CICLOS-MIN_CICLOS+1]; //guarda cantidad de ciclos por tamaño
+    private int[] cantidadCiclosTamano = new int[MAX_CICLOS-MIN_CICLOS+1]; //guarda cantidad de ciclos por tamaño
 
-    public CiclosSimplesJohnson(){
-        for(int i=0; i<cantidadCiclosTamano.length; i++)
-            cantidadCiclosTamano[i] = 0;
-    }
+
 
     public void correrJohnson(Grafo g, SalidaThread out){
+        cantidadCiclosTamano = new int [MAX_CICLOS - MIN_CICLOS +1];
+        for(int i=0; i<cantidadCiclosTamano.length; i++)
+            cantidadCiclosTamano[i] = 0;
         ArrayList<IntLinkedOpenHashSet> componentes = new ArrayList<IntLinkedOpenHashSet>(UtilidadesGrafo.componentesFuertementeConectadas(g,g.getVertices()));
 
         componentes.removeIf(new Predicate<IntLinkedOpenHashSet>() { //remuevo los de tamaño menor que MIN_CICLOS
@@ -38,12 +37,7 @@ public class CiclosSimplesJohnson {
             int minVertice = getMinVerticeComponentes(componente);
             componentes.remove(0);
 
-            this.ciclosSimplesComponente(g, componente, minVertice, minVertice, out, new Predicate<IntArrayList>() {
-                @Override
-                public boolean test(IntArrayList integers) {
-                    return false; // como estoy buscando todos los ciclos siempre retorno false (esto se cambia para el bonus track)
-                }
-            });
+            this.ciclosSimplesComponente(g, componente, minVertice, minVertice, out,null);
 
             g.eliminarVertice(minVertice);
             componente.remove(minVertice);
@@ -61,23 +55,23 @@ public class CiclosSimplesJohnson {
     /**@return Si hay ciclo en el grafo g que contenga los vertices 'a' y 'b'*/
     public boolean hayCiclo(Grafo g, int a, int b){
         /*1- Crear componentes de g
-        * 2- Ver si en a y b estan en la misma componente
-        *   2.1- Si no estan, return false
-        *   2.2- si estan buscar ciclos*/
+         * 2- Ver si en a y b estan en la misma componente
+         *   2.1- Si no estan, return false
+         *   2.2- si estan buscar ciclos*/
         LinkedHashSet<IntLinkedOpenHashSet> componentes = UtilidadesGrafo.componentesFuertementeConectadas(g, g.getVertices());
         IntLinkedOpenHashSet componente = buscarComponenteContiene(a,b,componentes);
         if(componente != null){
             return this.ciclosSimplesComponente(g, componente, a, a, null, new Predicate<IntArrayList>() {
                 @Override
-                public boolean test(IntArrayList integers) {
-                    return integers.contains(a) && integers.contains(b); //condicion de corte para el johnsons sobre la componente
+                public boolean test(IntArrayList pilaCiclos) {
+                    return pilaCiclos.contains(a) && pilaCiclos.contains(b); //condicion de corte para el johnsons sobre la componente
                 }
             });
         }
         return false;
     }
 
-    /**@return Busca la Componente que tiene los vertices a y b. En caso de que ninguna los contenga retorna null*/
+    /**@return Componente que tiene los vertices a y b. En caso de que ninguna los contenga retorna null*/
     private IntLinkedOpenHashSet buscarComponenteContiene(int a, int b, LinkedHashSet<IntLinkedOpenHashSet> componentes){
         for (IntLinkedOpenHashSet componente : componentes) {
             if(componente.contains(a) && componente.contains(b))
@@ -100,6 +94,7 @@ public class CiclosSimplesJohnson {
 
     private boolean ciclosSimplesComponente(Grafo g, IntLinkedOpenHashSet vComponente, int vInicio, int vActual, SalidaThread out, Predicate<IntArrayList> condBonusTrack){
         boolean hayCiclo = false;
+        boolean noHayCicloAyB = false;
         pila.push(vActual);
         blockedSet.add(vActual);
         IntLinkedOpenHashSet adyacentes = new IntLinkedOpenHashSet();
@@ -111,27 +106,30 @@ public class CiclosSimplesJohnson {
 
         for (int ady : adyacentes) {
             if(ady == vInicio){ // encontre un ciclo
-                if (pila.size() >= MIN_CICLOS) {
-
-                    if(condBonusTrack.test(pila)) // esto es para el bonus track, se chequea si ambos vertices a y b estan en el ciclo y se retorna true.
-                        return true;
-
-                    if(out != null) // esto es porque cuando hago al bonusTrack, le paso un null como parametro en out (porque no tengo que escribir en archivo)
+                if(condBonusTrack == null) {
+                    if (pila.size() >= MIN_CICLOS) {
                         out.agregarCiclo(pila.clone());
-
-                    suma++;
-
-                    cantidadCiclosTamano[pila.size() - MIN_CICLOS]++;
+                        suma++;
+                        cantidadCiclosTamano[pila.size() - MIN_CICLOS]++;
+                    }
+                    hayCiclo = true;
                 }
-                hayCiclo = true;
-            }else{
+                else{ //caso en elque estoy haciendo el bonusTrack
+                    if(condBonusTrack.test(pila)) // esto es para el bonus track, se chequea si ambos vertices a y b estan en el ciclo y se retorna true.
+                        hayCiclo = true;
+                }
+            }
+            else{
                 if(!blockedSet.contains(ady)) {
                     if (pila.size() < MAX_CICLOS){
                         if (ciclosSimplesComponente(g, vComponente, vInicio, ady, out, condBonusTrack))
                             hayCiclo = true;
-                    }else{
-                        hayCiclo = true;
+                    }else {
+                        hayCiclo = true; //esto lo hago para desbloquear el vertice actual, dado que llegue aqui porque excedi MAX_CICLOS y no hay ciclo
+                        if(condBonusTrack != null)
+                            noHayCicloAyB = true;
                     }
+
                 }
             }
         }
@@ -147,6 +145,9 @@ public class CiclosSimplesJohnson {
                     blockedMap.get(ady).add(vActual);
             }
         }
+
+        if(condBonusTrack != null && noHayCicloAyB) // si ocurre esto es porque puse true en hayCiclo solo para desbloquear vertice actual
+            hayCiclo = false; // entonces no hay ciclo qeu contenga a a y b.
 
         pila.popInt();
         return hayCiclo;

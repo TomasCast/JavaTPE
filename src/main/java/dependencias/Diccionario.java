@@ -64,7 +64,7 @@ public class Diccionario {
     }
 
     /**Permite traducir de integer a string un conjunto de numeros de paquete
-     * @returns el correspondiente conjunto pero con los nombres de paquete que
+     * @return el correspondiente conjunto pero con los nombres de paquete que
      * corresponden a cada numero*/
     public ArrayList<String> traducirIntAString(IntLinkedOpenHashSet set){
         ArrayList<String> s = new ArrayList<>();
@@ -77,6 +77,27 @@ public class Diccionario {
     /**@returns Los paquetes contenidos en el Diccionario.*/
     public ArrayList<Paquete> getPaquetes(){
         return paquetes;
+    }
+
+    public StringBuilder mostrarPaquetes(){
+        StringBuilder salida = new StringBuilder();
+        for (Paquete p:paquetes) {
+            salida.append(p.getNombre());
+            salida.append("\n Clases:\n");
+            for (String clase:p.getClases()){
+                salida.append("\t");
+                salida.append(clase);
+                salida.append("\n");
+            }
+
+            salida.append("Dependencias:\n");
+            for (String dependencia:p.getDependencias()) {
+                salida.append("\t");
+                salida.append(dependencia);
+                salida.append("\n");
+            }
+        }
+        return salida;
     }
 
 }
