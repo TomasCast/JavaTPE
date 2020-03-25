@@ -9,15 +9,10 @@ import grafo.Grafo;
 import grafo.UtilidadesGrafo;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FilenameFilter;
-import java.text.NumberFormat;
 
 import static com.company.Main.crearBufferedWriter;
 
@@ -57,7 +52,7 @@ public class InterfazUI extends JFrame {
                         Salida.append("No hay ciclo simple que contiene a "+nodoA+" y a "+nodoB);
 
                 }else{ //correr el johnsons normal
-                    Salida.append("Dependencias de tamano"+c.MIN_CICLOS+" a "+c.MAX_CICLOS+"\n");
+                    Salida.append("Dependencias de tamano "+c.MIN_CICLOS+" a "+c.MAX_CICLOS+"\n");
                     Salida.append("Generando grafo de dependencias...\n");
                     Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
                     SalidaThread generadorSalida = new SalidaThread(crearBufferedWriter("ciclos.txt"), diccionario);

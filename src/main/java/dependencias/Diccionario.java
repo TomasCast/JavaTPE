@@ -2,15 +2,11 @@ package dependencias;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
-
 import java.util.ArrayList;
-import java.util.Set;
 
 public class Diccionario {
     /**Esta clase tiene como objetivo agrupar un conjunto de paquetes y agregar funcionalidades sobre estos*/
 
-    //private HashMap<String, Integer> dic = new HashMap<>();
-            // fue reemplazado para evitar el (un)boxing de integers
     private Object2IntLinkedOpenHashMap<String> dic = new Object2IntLinkedOpenHashMap<String>();
     private ArrayList<Paquete> paquetes = new ArrayList<>();
 

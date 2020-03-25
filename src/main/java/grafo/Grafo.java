@@ -2,9 +2,6 @@ package grafo;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 
-import java.util.LinkedHashSet;
-
-
 public class Grafo {
     private final int TAM_DEFECTO = 1000;
     private final int FACTOR_CRECIMIENTO = 2;
@@ -14,14 +11,6 @@ public class Grafo {
     private int maxCantidadVertices = 0; //indica la cantidad maxima de vertices que se encontraron activos en el grafo
     private int cantidadVerticesActivos = 0; // indica la cantidad de vertices que no estan borrados (en boorado[])
     private int cantidadArcos = 0;
-
-
-    /*todo Cosas importantes que hablar en el informe:
-    *  --> El grafo esta implementado con matriz de adyacencia
-    *  --> Cuando se llena la matriz crece segun un factor de crecimiento (2)
-    *  --> Puedo agregar vertices con numero (su id) pero este no puede ser mas grande
-    *  que el tamaño de la matriz. Si es igual al tamaño, se agranda la matriz segun el
-    *  factor de crecimiento*/
 
     /**
      * @return true si destino es adyacente a origen*/
@@ -74,7 +63,6 @@ public class Grafo {
 
     /*
     * Agrega un vertice al grafo.
-    * todo revisar
     * */
     public void agregarVertice(int nuevo){
         if(nuevo >= borrado.length || borrado[nuevo])
@@ -98,7 +86,6 @@ public class Grafo {
                 }
                 borrado[nuevo] = false;
             }
-
         /*
         * Esto quiere decir que si agrego 4 vertices, (1,2,3,4) y elimino el 3, tendre (1,2,4). Si agrego uno mas,
         * agregare el 5 (1,2,4,5)
@@ -165,21 +152,5 @@ public class Grafo {
         }
         return null;
     }
-    /*
-        /**
-         * @param g Grafo a convertir en reverso.
-         * @return Grafo reverso de g.*/
-    /*public static Grafo transformarReverso(Grafo g){
-        boolean [][] matriz = new boolean[g.matriz.length][g.matriz.length];
-        boolean [] borrado = new boolean[g.borrado.length];
-
-        for(int i=0; i<matriz.length; i++){ // revierto la matriz
-            borrado[i] = g.borrado[i];
-            for(int j=0; j<matriz.length; j++)
-                matriz[i][j] = g.matriz[j][i];
-        }
-        return new Grafo(borrado, matriz, g.maxCantidadVertices, g.cantidadVerticesActivos, g.cantidadArcos);
-    }*/
-
 
 }
