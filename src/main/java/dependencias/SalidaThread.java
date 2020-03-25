@@ -12,8 +12,14 @@ public class SalidaThread implements Runnable {
     private int primero;
     private boolean seguir = true;
 
-    public SalidaThread(BufferedWriter bw){
+    public SalidaThread(BufferedWriter bw, Diccionario d){
         this.bwSalida = bw;
+        try {
+            this.imprimirTablaMapeos(d);
+        } catch (IOException e) {
+            System.out.println("Error al escribir la tabla de mapeo");
+            e.printStackTrace();
+        }
     }
     
     @Override
@@ -45,6 +51,17 @@ public class SalidaThread implements Runnable {
         }
     }
 
+    /**Imprime la tabla de mapeos de integer a nombre de paquete. */
+    private void imprimirTablaMapeos(Diccionario d) throws IOException {
+        ArrayList<Paquete> paquetes = d.getPaquetes();
+        for(int i=0; i<paquetes.size(); i++){
+            bwSalida.write(Integer.toString(i));
+            bwSalida.write("-");
+            bwSalida.write(paquetes.get(i).getNombre());
+            bwSalida.newLine();
+        }
+    }
+
     public synchronized void agregarCiclo(IntArrayList ciclo){
        ciclos.add(ciclos.size(), ciclo);
        if(ciclos.size() == 1)
@@ -55,7 +72,7 @@ public class SalidaThread implements Runnable {
         this.seguir = false;
     }
 
-    public synchronized IntArrayList obtenerSigiente(){
+    private synchronized IntArrayList obtenerSigiente(){
         if(ciclos.isEmpty()) {
             try {
                 this.wait();

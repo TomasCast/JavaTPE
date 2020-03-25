@@ -41,17 +41,19 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        SalidaThread generadorSalida = new SalidaThread(crearBufferedWriter("ciclos.txt"));
+        Diccionario diccionario = UtilidadesOdem.getPaquetes(args[0]);
+        SalidaThread generadorSalida = new SalidaThread(crearBufferedWriter("ciclos.txt"), diccionario);
         Thread t = new Thread(generadorSalida);
         t.start();
 
         CiclosSimplesJohnson c = new CiclosSimplesJohnson();
 
-        Diccionario diccionario = UtilidadesOdem.getPaquetes(args[0]);
+
         Grafo dependencias = UtilidadesGrafo.construirGrafo(diccionario);
 
         c.correrJohnson(dependencias, generadorSalida);
-        System.out.println(c.suma);
+//        System.out.println(c.suma);
+//        System.out.println(c.hayCiclo(dependencias,19,4));
 
         generadorSalida.finalizar();
         t.join();
