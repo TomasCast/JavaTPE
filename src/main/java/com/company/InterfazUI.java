@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import static com.company.Main.crearBufferedWriter;
 
@@ -76,7 +77,9 @@ public class InterfazUI extends JFrame {
         seleccionarArchivoDeDependenciasButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                File dirProyecto = new File(System.getProperty("user.dir"));
+                JFileChooser jfc = new JFileChooser();
+                jfc.setCurrentDirectory(dirProyecto);
                 jfc.setDialogTitle("Seleccionar Archivo ODEM");
                 jfc.setAcceptAllFileFilterUsed(true);
                 FileNameExtensionFilter filtro = new FileNameExtensionFilter("extension .odem", "odem");
