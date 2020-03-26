@@ -26,7 +26,7 @@ public class SalidaThread implements Runnable {
     public void run() {
         while(seguir || ciclos.size() > 0){
             try {
-                IntArrayList cicloActual = obtenerSigiente();
+                IntArrayList cicloActual = obtenerSiguiente();
                 int primero = cicloActual.getInt(0);
                 for (int i=0; i < cicloActual.size(); i++) {
                     bwSalida.write(Integer.toString(cicloActual.getInt(i)));
@@ -72,7 +72,7 @@ public class SalidaThread implements Runnable {
         this.seguir = false;
     }
 
-    private synchronized IntArrayList obtenerSigiente(){
+    private synchronized IntArrayList obtenerSiguiente(){
         if(ciclos.isEmpty()) {
             try {
                 this.wait();
