@@ -15,7 +15,7 @@ public class UtilidadesOdem {
 
     /**@param archivo archivo odem con dependencias.
      * @return document resultante de parsear el archivo*/
-    public static Document procesarArchivo(File archivo){
+    private static Document procesarArchivo(File archivo){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
         try {

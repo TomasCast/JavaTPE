@@ -12,14 +12,16 @@ public class CiclosSimplesJohnson {
     public static int MIN_CICLOS = 3;
     public int suma = 0;
 
-    private IntLinkedOpenHashSet blockedSet = new IntLinkedOpenHashSet();
-    private Int2ObjectMap<IntLinkedOpenHashSet> blockedMap = new Int2ObjectLinkedOpenHashMap<>();
+    private IntLinkedOpenHashSet blockedSet ;
+    private Int2ObjectMap<IntLinkedOpenHashSet> blockedMap ;
     private IntArrayList pila = new IntArrayList();
     private int[] cantidadCiclosTamano = new int[MAX_CICLOS-MIN_CICLOS+1]; //guarda cantidad de ciclos por tamaño
 
 
 
     public void correrJohnson(Grafo g, SalidaThread out){
+        blockedSet = new IntLinkedOpenHashSet(g.getCantVertices(),1f);
+        blockedMap = new Int2ObjectLinkedOpenHashMap<>(g.getCantVertices(),1f);
         cantidadCiclosTamano = new int [MAX_CICLOS - MIN_CICLOS +1];
         for(int i=0; i<cantidadCiclosTamano.length; i++)
             cantidadCiclosTamano[i] = 0;
@@ -52,6 +54,7 @@ public class CiclosSimplesJohnson {
         }
 
     }
+
     /**@return Si hay ciclo en el grafo g que contenga los vertices 'a' y 'b'*/
     public boolean hayCiclo(Grafo g, int a, int b){
         LinkedHashSet<IntLinkedOpenHashSet> componentes = UtilidadesGrafo.componentesFuertementeConectadas(g, g.getVertices());

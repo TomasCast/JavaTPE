@@ -3,17 +3,17 @@ package dependencias;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class SalidaThread implements Runnable {
     private ArrayList<IntArrayList> ciclos = new ArrayList<>();
     private BufferedWriter bwSalida;
-    private int primero;
     private boolean seguir = true;
 
-    public SalidaThread(BufferedWriter bw, Diccionario d){
-        this.bwSalida = bw;
+    public SalidaThread(String rutaArchivo, Diccionario d){
+        this.bwSalida = crearBufferedWriter(rutaArchivo);
         try {
             this.imprimirTablaMapeos(d);
         } catch (IOException e) {
@@ -24,9 +24,10 @@ public class SalidaThread implements Runnable {
     
     @Override
     public void run() {
-        while(seguir || ciclos.size() > 0){
+        IntArrayList cicloActual = obtenerSiguiente();
+        while(cicloActual!=null /*|| ciclos.size() > 0*/){
             try {
-                IntArrayList cicloActual = obtenerSiguiente();
+                //cicloActual = obtenerSiguiente();
                 int primero = cicloActual.getInt(0);
                 for (int i=0; i < cicloActual.size(); i++) {
                     bwSalida.write(Integer.toString(cicloActual.getInt(i)));
@@ -40,6 +41,7 @@ public class SalidaThread implements Runnable {
                 System.out.println("Error al escribir en el archivo...");
                 e.printStackTrace();
             }
+            cicloActual = obtenerSiguiente();
         }
 
         try {
@@ -73,13 +75,31 @@ public class SalidaThread implements Runnable {
     }
 
     private synchronized IntArrayList obtenerSiguiente(){
-        if(ciclos.isEmpty()) {
+        if(!seguir && ciclos.size() == 0)
+            return null;
+
+        while(ciclos.size() == 0) {
             try {
                 this.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
         return ciclos.remove(0);
+    }
+
+    private static BufferedWriter crearBufferedWriter(String rutaArchivo){
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(rutaArchivo);
+        }catch (IOException e){
+            System.out.println("ruta de archivo ("+rutaArchivo+") no valida...");
+            e.printStackTrace();
+        }
+        if(fw != null)
+            return new BufferedWriter(fw);
+        else
+            return null;
     }
 }
