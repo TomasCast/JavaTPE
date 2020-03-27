@@ -5,7 +5,9 @@
     <constraints>
       <xy x="20" y="20" width="593" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <foreground color="-14144460"/>
+    </properties>
     <border type="none"/>
     <children>
       <vspacer id="db65a">
@@ -44,7 +46,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="59e9b" class="javax.swing.JTextArea" binding="Salida">
+          <component id="59e9b" class="javax.swing.JTextArea" binding="salida">
             <constraints/>
             <properties>
               <editable value="false"/>

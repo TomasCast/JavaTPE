@@ -57,6 +57,8 @@ public class CiclosSimplesJohnson {
 
     /**@return Si hay ciclo en el grafo g que contenga los vertices 'a' y 'b'*/
     public boolean hayCiclo(Grafo g, int a, int b){
+        blockedSet = new IntLinkedOpenHashSet(g.getCantVertices(),1f);
+        blockedMap = new Int2ObjectLinkedOpenHashMap<>(g.getCantVertices(),1f);
         LinkedHashSet<IntLinkedOpenHashSet> componentes = UtilidadesGrafo.componentesFuertementeConectadas(g, g.getVertices());
         IntLinkedOpenHashSet componente = buscarComponenteContiene(a,b,componentes);
         if(componente != null){

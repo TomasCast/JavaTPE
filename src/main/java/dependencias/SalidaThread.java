@@ -21,13 +21,12 @@ public class SalidaThread implements Runnable {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void run() {
         IntArrayList cicloActual = obtenerSiguiente();
-        while(cicloActual!=null /*|| ciclos.size() > 0*/){
+        while(cicloActual!=null){
             try {
-                //cicloActual = obtenerSiguiente();
                 int primero = cicloActual.getInt(0);
                 for (int i=0; i < cicloActual.size(); i++) {
                     bwSalida.write(Integer.toString(cicloActual.getInt(i)));
@@ -65,20 +64,20 @@ public class SalidaThread implements Runnable {
     }
 
     public synchronized void agregarCiclo(IntArrayList ciclo){
-       ciclos.add(ciclos.size(), ciclo);
-       if(ciclos.size() == 1)
-           this.notify(); // si hay un nuevo ciclo, notifico para empezar a imprimir
+        ciclos.add(ciclos.size(), ciclo);
+        if(ciclos.size() == 1)
+            this.notify(); // si hay un nuevo ciclo, notifico para empezar a imprimir
     }
 
     public synchronized void finalizar(){
         this.seguir = false;
+        this.notify();
     }
 
     private synchronized IntArrayList obtenerSiguiente(){
-        if(!seguir && ciclos.size() == 0)
-            return null;
-
         while(ciclos.size() == 0) {
+            if(!seguir)
+                return null;
             try {
                 this.wait();
             } catch (InterruptedException e) {
